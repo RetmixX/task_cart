@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"task_cart/config"
 	"task_cart/internal/model/entity"
 	"task_cart/pkg/db"
@@ -48,4 +49,53 @@ func main() {
 
 	fmt.Println("Success migrate")
 
+	//seedData(dbConn)
+	//seedStatus(dbConn)
+	//var d entity.CartProduct
+
+	var data *entity.Cart
+	_ = dbConn.Model(&entity.Cart{}).Preload("Products").First(&data)
+	fmt.Println(data)
+}
+
+func seedData(con *gorm.DB) {
+	con.Create(&entity.Product{
+		Title: "Pizza",
+		Price: 100,
+		Count: 999,
+	})
+
+	con.Create(&entity.Product{
+		Title: "Sushi",
+		Price: 354,
+		Count: 999,
+	})
+
+	con.Create(&entity.Product{
+		Title: "Kebab",
+		Price: 50,
+		Count: 999,
+	})
+
+	con.Create(&entity.Product{
+		Title: "Pepsi",
+		Price: 80,
+		Count: 999,
+	})
+
+	con.Create(&entity.Product{
+		Title: "Добрый кола 1L",
+		Price: 129,
+		Count: 999,
+	})
+
+	con.Create(&entity.Cart{})
+
+}
+
+func seedStatus(conn *gorm.DB) {
+	conn.Create(&entity.Status{Name: "Issued"})
+	conn.Create(&entity.Status{Name: "Paid"})
+	conn.Create(&entity.Status{Name: "Sent"})
+	conn.Create(&entity.Status{Name: "Delivered"})
 }
