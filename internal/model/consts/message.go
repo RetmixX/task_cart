@@ -7,4 +7,5 @@ var (
 	InvalidJsonErr = errors.New("invalid data")
 	InvalidURLErr  = errors.New("invalid URL param")
 	ServerErr      = errors.New("server error")
+	InvalidRequest = errors.New("bad request")
 )

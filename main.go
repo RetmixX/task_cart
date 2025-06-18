@@ -5,6 +5,8 @@ import (
 	"gorm.io/gorm"
 	"task_cart/config"
 	"task_cart/internal/model/entity"
+	"task_cart/internal/repository"
+	"task_cart/internal/service"
 	"task_cart/pkg/db"
 )
 
@@ -51,11 +53,17 @@ func main() {
 
 	//seedData(dbConn)
 	//seedStatus(dbConn)
-	//var d entity.CartProduct
 
-	var data *entity.Cart
-	_ = dbConn.Model(&entity.Cart{}).Preload("Products").First(&data)
-	fmt.Println(data)
+	productRepo := repository.NewProductRepository(dbConn)
+	statusRepo := repository.NewStatusRepository(dbConn)
+	cartRepo := repository.NewCartRepository(dbConn)
+	orderRepo := repository.NewOrderRepository(dbConn)
+
+	productService := service.NewProductService(productRepo)
+	statusService := service.NewStatusService(statusRepo)
+	cartService := service.NewCartService(cartRepo, productRepo)
+	orderService := service.NewOrderService(orderRepo, statusRepo, cartRepo)
+
 }
 
 func seedData(con *gorm.DB) {

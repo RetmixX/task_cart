@@ -49,6 +49,12 @@ func ServerErr(c *gin.Context) {
 	})
 }
 
+func BadRequest(c *gin.Context, data interface{}) {
+	c.JSON(http.StatusBadRequest, gin.H{
+		"error": data,
+	})
+}
+
 func parseError(err validator.ValidationErrors) map[string]string {
 	errorMsg := make(map[string]string, len(err))
 	for _, v := range err {

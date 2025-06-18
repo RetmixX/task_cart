@@ -16,11 +16,11 @@ type ProductInterface interface {
 	Delete(id uint) error
 }
 
-type ProductService struct {
+type ProductRepository struct {
 	db *gorm.DB
 }
 
-func (p *ProductService) All() ([]entity.Product, error) {
+func (p *ProductRepository) All() ([]entity.Product, error) {
 	const op = "repository.product.All"
 	var products []entity.Product
 
@@ -31,7 +31,7 @@ func (p *ProductService) All() ([]entity.Product, error) {
 	return products, nil
 }
 
-func (p *ProductService) ById(id uint) (*entity.Product, error) {
+func (p *ProductRepository) ById(id uint) (*entity.Product, error) {
 	const op = "repository.product.ById"
 	var product entity.Product
 
@@ -45,7 +45,7 @@ func (p *ProductService) ById(id uint) (*entity.Product, error) {
 	return &product, nil
 }
 
-func (p *ProductService) Create(data *entity.Product) (*entity.Product, error) {
+func (p *ProductRepository) Create(data *entity.Product) (*entity.Product, error) {
 	const op = "repository.product.Create"
 	if err := p.db.Create(data).Error; err != nil {
 		return nil, fmt.Errorf("%s: can't create product: %w", op, err)
@@ -54,7 +54,7 @@ func (p *ProductService) Create(data *entity.Product) (*entity.Product, error) {
 	return data, nil
 }
 
-func (p *ProductService) Update(id uint, data *entity.Product) (*entity.Product, error) {
+func (p *ProductRepository) Update(id uint, data *entity.Product) (*entity.Product, error) {
 	const op = "repository.product.Update"
 
 	var updated entity.Product
@@ -70,7 +70,7 @@ func (p *ProductService) Update(id uint, data *entity.Product) (*entity.Product,
 	return &updated, nil
 }
 
-func (p *ProductService) Delete(id uint) error {
+func (p *ProductRepository) Delete(id uint) error {
 	const op = "repository.product.Delete"
 	var deleted entity.Product
 	if err := p.db.First(&deleted, id).Error; err != nil {
@@ -87,6 +87,6 @@ func (p *ProductService) Delete(id uint) error {
 	return nil
 }
 
-func NewProductService(conn *gorm.DB) *ProductService {
-	return &ProductService{db: conn}
+func NewProductRepository(conn *gorm.DB) *ProductRepository {
+	return &ProductRepository{db: conn}
 }
