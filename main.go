@@ -1,12 +1,18 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"gorm.io/gorm"
+	"os"
+	"os/signal"
+	"syscall"
 	"task_cart/config"
 	"task_cart/internal/model/entity"
 	"task_cart/internal/repository"
 	"task_cart/internal/service"
+	v1 "task_cart/internal/transport/rest/controllers/v1"
+	"task_cart/internal/transport/server"
 	"task_cart/pkg/db"
 )
 
@@ -63,6 +69,24 @@ func main() {
 	statusService := service.NewStatusService(statusRepo)
 	cartService := service.NewCartService(cartRepo, productRepo)
 	orderService := service.NewOrderService(orderRepo, statusRepo, cartRepo)
+
+	statusCtrl := v1.NewStatusController(statusService)
+	productCtrl := v1.NewProductController(productService)
+	cartCtrl := v1.NewCartController(cartService)
+	orderCtrl := v1.NewOrderController(orderService)
+
+	restServer := server.NewRestServer(cfg.Port, cfg.Mode, statusCtrl, productCtrl, cartCtrl, orderCtrl)
+
+	go restServer.StartServer()
+	defer restServer.StopServer()
+
+	sgn := make(chan os.Signal, 1)
+
+	signal.Notify(sgn, syscall.SIGINT, syscall.SIGTERM)
+	select {
+	case <-context.Background().Done():
+	case <-sgn:
+	}
 
 }
 

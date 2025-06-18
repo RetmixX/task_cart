@@ -5,14 +5,14 @@ import (
 	v1 "task_cart/internal/transport/rest/controllers/v1"
 )
 
-var cartURL = "/v1/carts"
+var cartURL = "/v1/cart"
 
 func RegisterCartRoutes(
 	engine *gin.Engine, cartCtrl *v1.CartController) {
 
 	cartGroup := engine.Group(cartURL)
 
-	cartGroup.GET("", cartCtrl.All)
-	cartGroup.DELETE(":id", cartCtrl.DeleteProduct)
-	cartGroup.POST("", cartCtrl.Add)
+	cartGroup.GET("view", cartCtrl.All)
+	cartGroup.DELETE("product/:id", cartCtrl.DeleteProduct)
+	cartGroup.POST("product", cartCtrl.Add)
 }

@@ -12,5 +12,5 @@ func RegisterStatusRoutes(
 
 	statusGroup := engine.Group(statusURL)
 
-	statusGroup.GET("all", statusCtrl.GetAll)
+	statusGroup.GET("", statusCtrl.GetAll)
 }

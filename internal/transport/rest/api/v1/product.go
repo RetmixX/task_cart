@@ -12,5 +12,5 @@ func RegisterProductRoutes(
 
 	productGroup := engine.Group(productURL)
 
-	productGroup.GET("all", productCtrl.GetAll)
+	productGroup.GET("", productCtrl.GetAll)
 }

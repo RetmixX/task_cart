@@ -1,0 +1,19 @@
+### View current cart
+GET http://localhost:3000/v1/cart/view
+Accept: application/json
+
+### Add product in cart
+POST http://localhost:3000/v1/cart/product
+Content-Type: application/json
+
+{
+  "product_id": 2,
+  "quantity": 3
+}
+
+### Remove product from cart
+DELETE http://localhost:3000/v1/cart/product/2
+Accept: application/json
+
+
+
