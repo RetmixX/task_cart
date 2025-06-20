@@ -1,0 +1,15 @@
+### View all orders
+GET http://localhost:3000/api/v1/orders
+Accept: application/json
+
+### Create order
+POST http://localhost:3000/api/v1/orders
+Content-Type: application/json
+
+###
+PUT http://localhost:3000/api/v1/orders/1
+Content-Type: application/json
+
+{
+  "status_id": 3
+}

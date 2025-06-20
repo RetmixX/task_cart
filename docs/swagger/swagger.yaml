@@ -1,0 +1,153 @@
+openapi: 3.1.0
+info:
+  title: Cart API
+  description: Cart API
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:3000/api/v1'
+components:
+  schemas:
+    ProductDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Pizza"
+        price:
+          type: integer
+          example: 150.99
+
+    ProductWithCountDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Pizza"
+        price:
+          type: integer
+          example: 150.99
+        count:
+          type: integer
+          example: 99
+          description: "Количество товара на складе"
+
+    StatusDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Issue"
+          description: "Предусмотрено 4 статуса: Issued, Paid, Sent, Delivered"
+
+    CartDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        in_cart:
+          type: array
+          items:
+            type: object
+            properties:
+              quantity:
+                type: integer
+                example: 20
+              product:
+                $ref: "#/components/schemas/ProductDTO"
+
+    OrderDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        status:
+          $ref: "#/components/schemas/StatusDTO"
+        in_cart:
+          type: array
+          items:
+            type: object
+            properties:
+              quantity:
+                type: integer
+                example: 20
+              product:
+                $ref: "#/components/schemas/ProductDTO"
+
+
+
+  responses:
+    serverError:
+      description: "Server error"
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+
+    validError:
+      description: "Validation error"
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+              errors:
+                type: array
+
+
+    urlError:
+      description: "Url error"
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+
+
+    badRequest:
+      description: "Bad request"
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: object
+
+
+    notFound:
+      description: "Not found"
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+
+
+
+
+
+
+
+paths:
+  /products:
+    get:
+      summary: "Возвращает коллекцию товаров"
+
+
+
+

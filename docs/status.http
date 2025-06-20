@@ -1,4 +1,0 @@
-GET http://localhost:3000/v1/statuses
-Accept: application/json
-
-###

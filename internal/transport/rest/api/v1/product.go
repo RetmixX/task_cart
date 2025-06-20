@@ -5,7 +5,7 @@ import (
 	v1 "task_cart/internal/transport/rest/controllers/v1"
 )
 
-var productURL = "/v1/products"
+var productURL = "/api/v1/products"
 
 func RegisterProductRoutes(
 	engine *gin.Engine, productCtrl *v1.ProductController) {

@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"task_cart/internal/model/consts"
 	"task_cart/internal/model/dto"
 	"task_cart/internal/repository"
@@ -38,7 +39,7 @@ func (c *CartService) AddProduct(idProduct uint, quantity int) (*dto.CartDTO, er
 	}
 
 	if findProduct.Count < quantity {
-		return nil, consts.InvalidJsonErr
+		return nil, consts.InvalidRequest
 	}
 
 	cart, err := c.cartRepo.AddProductCart(findProduct, quantity)
@@ -63,6 +64,7 @@ func (c *CartService) SeeCart() (*dto.CartDTO, error) {
 func (c *CartService) DeleteProduct(idProduct uint) (*dto.CartDTO, error) {
 	product, err := c.productRepo.ById(idProduct)
 	if err != nil {
+		fmt.Println(err)
 		if errors.Is(err, db.EntityNotFoundErr) {
 			return nil, consts.NotFoundErr
 		}
@@ -72,6 +74,9 @@ func (c *CartService) DeleteProduct(idProduct uint) (*dto.CartDTO, error) {
 
 	cart, err := c.cartRepo.DeleteProductFromCart(product)
 	if err != nil {
+		if errors.Is(err, db.EntityNotFoundErr) {
+			return nil, consts.NotFoundErr
+		}
 		return nil, consts.ServerErr
 	}
 

@@ -3,6 +3,7 @@ package v1
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"strconv"
 	"task_cart/internal/helper"
 	"task_cart/internal/model/consts"
@@ -57,7 +58,12 @@ func (o *OrderController) Update(c *gin.Context) {
 	var body dto.UpdateOrderDTO
 
 	if err = c.ShouldBindJSON(&body); err != nil {
-		helper.ValidationErr(c, err)
+		var validationErrors validator.ValidationErrors
+		if errors.As(err, &validationErrors) {
+			helper.ValidationErr(c, validationErrors)
+			return
+		}
+		helper.BadRequest(c, "invalid body")
 		return
 	}
 

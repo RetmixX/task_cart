@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"task_cart/internal/model/entity"
+	"task_cart/pkg/db"
 )
 
 type CartInterface interface {
@@ -84,6 +85,9 @@ func (c *CartRepository) DeleteProductFromCart(product *entity.Product) (*entity
 	var selectCartProduct entity.CartProduct
 	if err := c.db.Where("product_id = ? and cart_id = ?",
 		product.ID, currentCart.ID).First(&selectCartProduct).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, db.EntityNotFoundErr
+		}
 		return nil, fmt.Errorf("%s: can't get position in cart: %w", op, err)
 	}
 	quantity := selectCartProduct.Quantity

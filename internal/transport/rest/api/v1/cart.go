@@ -5,7 +5,7 @@ import (
 	v1 "task_cart/internal/transport/rest/controllers/v1"
 )
 
-var cartURL = "/v1/cart"
+var cartURL = "/api/v1/cart"
 
 func RegisterCartRoutes(
 	engine *gin.Engine, cartCtrl *v1.CartController) {

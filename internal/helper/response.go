@@ -26,26 +26,26 @@ func CreatedResponse(c *gin.Context, data interface{}) {
 
 func NotFoundResponse(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{
-		"error": consts.NotFoundErr,
+		"error": consts.NotFoundErr.Error(),
 	})
 }
 
-func ValidationErr(c *gin.Context, err error) {
+func ValidationErr(c *gin.Context, err validator.ValidationErrors) {
 	c.JSON(http.StatusUnprocessableEntity, gin.H{
-		"error":  consts.InvalidJsonErr,
-		"errors": parseError(err.(validator.ValidationErrors)),
+		"error":  consts.InvalidJsonErr.Error(),
+		"errors": parseError(err),
 	})
 }
 
 func UrlParamErr(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, gin.H{
-		"error": consts.InvalidURLErr,
+		"error": consts.InvalidURLErr.Error(),
 	})
 }
 
 func ServerErr(c *gin.Context) {
 	c.JSON(http.StatusInternalServerError, gin.H{
-		"error": consts.ServerErr,
+		"error": consts.ServerErr.Error(),
 	})
 }
 

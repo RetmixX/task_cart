@@ -2,7 +2,10 @@ package v1
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"strconv"
 	"task_cart/internal/helper"
 	"task_cart/internal/model/consts"
 	"task_cart/internal/model/dto"
@@ -32,7 +35,12 @@ func (s *CartController) Add(c *gin.Context) {
 	var body dto.AddProductCartDTO
 
 	if err := c.ShouldBindJSON(&body); err != nil {
-		helper.ValidationErr(c, err)
+		var validError validator.ValidationErrors
+		if errors.As(err, &validError) {
+			helper.ValidationErr(c, validError)
+			return
+		}
+		helper.BadRequest(c, "invalid body")
 		return
 	}
 
@@ -44,6 +52,11 @@ func (s *CartController) Add(c *gin.Context) {
 			return
 		}
 
+		if errors.Is(err, consts.InvalidRequest) {
+			helper.BadRequest(c, "invalid count quantity")
+			return
+		}
+
 		helper.ServerErr(c)
 		return
 	}
@@ -52,21 +65,20 @@ func (s *CartController) Add(c *gin.Context) {
 }
 
 func (s *CartController) DeleteProduct(c *gin.Context) {
-	var body dto.DeleteProductDTO
-
-	if err := c.ShouldBindJSON(&body); err != nil {
-		helper.ValidationErr(c, err)
+	id := c.Param("id")
+	idProduct, err := strconv.Atoi(id)
+	if err != nil {
+		helper.UrlParamErr(c)
 		return
 	}
-
-	result, err := s.cartService.DeleteProduct(body.ProductId)
+	result, err := s.cartService.DeleteProduct(uint(idProduct))
 
 	if err != nil {
 		if errors.Is(err, consts.NotFoundErr) {
 			helper.NotFoundResponse(c)
 			return
 		}
-
+		fmt.Println(err)
 		helper.ServerErr(c)
 		return
 	}

@@ -65,22 +65,6 @@ func (o *OrderRepository) CreateOrder() (*entity.OrderWithCart, error) {
 	if err := o.db.Where("name = ?", "Issued").First(&issuedStatus).Error; err != nil {
 		return nil, fmt.Errorf("%s: can't get issued status: %w", op, err)
 	}
-	newOrder := entity.Order{
-		StatusID: issuedStatus.ID,
-		CartID:   currentCart.ID,
-	}
-
-	if err := o.db.Create(&newOrder).Error; err != nil {
-		return nil, fmt.Errorf("%s: can't create order: %w", op, err)
-	}
-
-	if err := o.db.Create(&entity.Cart{}).Error; err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-
-	if err := o.db.Model(&currentCart).Update("is_ordered", true).Error; err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
 
 	err := o.db.Table("cart_products").Select("products.*, cart_products.quantity").
 		Joins("join products on products.id = cart_products.product_id").
@@ -89,8 +73,32 @@ func (o *OrderRepository) CreateOrder() (*entity.OrderWithCart, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%s: can't get cart info: %w", op, err)
 	}
+	var amount float32
+
+	for _, v := range result.Products {
+		amount += float32(v.Quantity) * v.Price
+	}
+
+	newOrder := entity.Order{
+		StatusID: issuedStatus.ID,
+		CartID:   currentCart.ID,
+		Amount:   amount,
+	}
+
+	if err = o.db.Create(&newOrder).Error; err != nil {
+		return nil, fmt.Errorf("%s: can't create order: %w", op, err)
+	}
+
+	if err = o.db.Model(&currentCart).Update("is_ordered", true).Error; err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
 	result.Order = newOrder
 	result.Status = issuedStatus
+
+	if err = o.db.Create(&entity.Cart{}).Error; err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
 
 	return &result, nil
 
