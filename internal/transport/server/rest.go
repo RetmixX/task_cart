@@ -7,6 +7,10 @@ import (
 	"net/http"
 	v1 "task_cart/internal/transport/rest/api/v1"
 	ctrl "task_cart/internal/transport/rest/controllers/v1"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "task_cart/docs"
 )
 
 type TransportInterface interface {
@@ -18,6 +22,12 @@ type RestServer struct {
 	server *http.Server
 }
 
+//	@title			Swagger Example API
+//	@version		1.0
+//	@description	This is a sample server celler server.
+
+// @host		localhost:3000
+// @BasePath	/api/v1
 func NewRestServer(port string, serverMode string,
 	statusCtrl *ctrl.StatusController, productCtrl *ctrl.ProductController,
 	cartCtrl *ctrl.CartController, orderCtrl *ctrl.OrderController) *RestServer {
@@ -29,6 +39,8 @@ func NewRestServer(port string, serverMode string,
 	v1.RegisterProductRoutes(engine, productCtrl)
 	v1.RegisterCartRoutes(engine, cartCtrl)
 	v1.RegisterOrderRoutes(engine, orderCtrl)
+
+	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	server := &http.Server{
 		Addr:    port,

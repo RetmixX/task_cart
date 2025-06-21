@@ -27,7 +27,7 @@ func NewCartController(cartService service.CartInterface) *CartController {
 //	@Accept		json
 //	@Produce	json
 //	@Success	200	{object}	dto.CartDTO
-//	@Router		/api/v1/cart [get]
+//	@Router		/cart [get]
 func (s *CartController) All(c *gin.Context) {
 	result, err := s.cartService.SeeCart()
 
@@ -47,7 +47,7 @@ func (s *CartController) All(c *gin.Context) {
 //	@Accept		json
 //	@Produce	json
 //	@Success	200	{object}	dto.CartDTO
-//	@Router		/api/v1/cart [post]
+//	@Router		/cart [post]
 func (s *CartController) Add(c *gin.Context) {
 	var body dto.AddProductCartDTO
 
@@ -89,7 +89,7 @@ func (s *CartController) Add(c *gin.Context) {
 //	@Accept		json
 //	@Produce	json
 //	@Success	200	{object}	dto.CartDTO
-//	@Router		/api/v1/cart/product/{id} [delete]
+//	@Router		/cart/product/{id} [delete]
 func (s *CartController) DeleteProduct(c *gin.Context) {
 	id := c.Param("id")
 	idProduct, err := strconv.Atoi(id)

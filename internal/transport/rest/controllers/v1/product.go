@@ -21,7 +21,7 @@ func NewProductController(productService service.ProductInterface) *ProductContr
 //	@Accept		json
 //	@Produce	json
 //	@Success	200	{object}	dto.ProductWithCountDTO
-//	@Router		/api/v1/products [get]
+//	@Router		/products [get]
 func (p *ProductController) GetAll(c *gin.Context) {
 	result, err := p.productService.All()
 

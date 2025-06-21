@@ -26,7 +26,7 @@ func NewOrderController(orderService service.OrderInterface) *OrderController {
 //	@Accept		json
 //	@Produce	json
 //	@Success	200	{object}	dto.OrderDTO
-//	@Router		/api/v1/orders [get]
+//	@Router		/orders [get]
 func (o *OrderController) GetAll(c *gin.Context) {
 	result, err := o.orderService.ViewOrders()
 
@@ -45,7 +45,7 @@ func (o *OrderController) GetAll(c *gin.Context) {
 //	@Accept		json
 //	@Produce	json
 //	@Success	200	{object}	dto.OrderDTO
-//	@Router		/api/v1/orders [post]
+//	@Router		/orders [post]
 func (o *OrderController) Create(c *gin.Context) {
 	result, err := o.orderService.CreateOrder()
 
@@ -71,7 +71,7 @@ func (o *OrderController) Create(c *gin.Context) {
 //	@Param		id				path		int					true	"Ид статуса"
 //	@Param		UpdateOrderDTO	body		dto.UpdateOrderDTO	true	"Обновление статуса"
 //	@Success	200				{object}	dto.OrderDTO
-//	@Router		/api/v1/orders [put]
+//	@Router		/orders [put]
 func (o *OrderController) Update(c *gin.Context) {
 	id := c.Param("id")
 	orderId, err := strconv.Atoi(id)

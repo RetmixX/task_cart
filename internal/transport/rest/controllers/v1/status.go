@@ -21,7 +21,7 @@ func NewStatusController(statusService service.StatusInterface) *StatusControlle
 //	@Accept		json
 //	@Produce	json
 //	@Success	200	{object}	dto.StatusDTO
-//	@Router		/api/v1/statuses [get]
+//	@Router		/statuses [get]
 func (s *StatusController) GetAll(c *gin.Context) {
 	result, err := s.statusService.All()
 
