@@ -14,6 +14,14 @@ func NewStatusController(statusService service.StatusInterface) *StatusControlle
 	return &StatusController{statusService: statusService}
 }
 
+// All Statuses godoc
+//
+//	@Summary	Просмотр всех статусов
+//	@Tags		status
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	dto.StatusDTO
+//	@Router		/api/v1/statuses [get]
 func (s *StatusController) GetAll(c *gin.Context) {
 	result, err := s.statusService.All()
 

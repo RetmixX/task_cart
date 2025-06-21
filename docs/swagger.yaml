@@ -1,0 +1,213 @@
+definitions:
+  dto.AddProductCartDTO:
+    properties:
+      product_id:
+        type: integer
+      quantity:
+        minimum: 1
+        type: integer
+    required:
+    - product_id
+    - quantity
+    type: object
+  dto.CartDTO:
+    properties:
+      id:
+        type: integer
+      in_cart:
+        items:
+          $ref: '#/definitions/dto.InCart'
+        type: array
+    type: object
+  dto.InCart:
+    properties:
+      product:
+        $ref: '#/definitions/dto.ProductDTO'
+      quantity:
+        type: integer
+    type: object
+  dto.OrderDTO:
+    properties:
+      amount:
+        type: number
+      id:
+        type: integer
+      in_cart:
+        items:
+          $ref: '#/definitions/dto.InCart'
+        type: array
+      status:
+        $ref: '#/definitions/dto.StatusDTO'
+    type: object
+  dto.ProductDTO:
+    properties:
+      id:
+        type: integer
+      price:
+        type: number
+      title:
+        type: string
+    type: object
+  dto.ProductWithCountDTO:
+    properties:
+      count:
+        type: integer
+      id:
+        type: integer
+      price:
+        type: number
+      title:
+        type: string
+    type: object
+  dto.StatusDTO:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dto.UpdateOrderDTO:
+    properties:
+      status_id:
+        type: integer
+    required:
+    - status_id
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/cart:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CartDTO'
+      summary: Просмотр товаров в корзине
+      tags:
+      - carts
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Добавить товар в козрину
+        in: body
+        name: AddProductCartDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddProductCartDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CartDTO'
+      summary: Добавление товара в корзину
+      tags:
+      - carts
+  /api/v1/cart/product/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ид товара
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CartDTO'
+      summary: Удаление товара из корзины
+      tags:
+      - carts
+  /api/v1/orders:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.OrderDTO'
+      summary: Просмотр всех заказов
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.OrderDTO'
+      summary: Создание заказа
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ид статуса
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновление статуса
+        in: body
+        name: UpdateOrderDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateOrderDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.OrderDTO'
+      summary: Изменение статуса заказа
+      tags:
+      - orders
+  /api/v1/products:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductWithCountDTO'
+      summary: Просмотр всех товаров
+      tags:
+      - products
+  /api/v1/statuses:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StatusDTO'
+      summary: Просмотр всех статусов
+      tags:
+      - status
+swagger: "2.0"

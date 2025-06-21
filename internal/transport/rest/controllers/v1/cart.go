@@ -20,6 +20,14 @@ func NewCartController(cartService service.CartInterface) *CartController {
 	return &CartController{cartService: cartService}
 }
 
+// All View cart godoc
+//
+//	@Summary	Просмотр товаров в корзине
+//	@Tags		carts
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	dto.CartDTO
+//	@Router		/api/v1/cart [get]
 func (s *CartController) All(c *gin.Context) {
 	result, err := s.cartService.SeeCart()
 
@@ -31,6 +39,15 @@ func (s *CartController) All(c *gin.Context) {
 	helper.OkResponse(c, result)
 }
 
+// Add product to cart
+//
+//	@Summary	Добавление товара в корзину
+//	@Tags		carts
+//	@Param		AddProductCartDTO	body	dto.AddProductCartDTO	true	"Добавить товар в козрину"
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	dto.CartDTO
+//	@Router		/api/v1/cart [post]
 func (s *CartController) Add(c *gin.Context) {
 	var body dto.AddProductCartDTO
 
@@ -64,6 +81,15 @@ func (s *CartController) Add(c *gin.Context) {
 	helper.CreatedResponse(c, result)
 }
 
+// Delete product to cart
+//
+//	@Summary	Удаление товара из корзины
+//	@Tags		carts
+//	@Param		id	path	int	true	"Ид товара"
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	dto.CartDTO
+//	@Router		/api/v1/cart/product/{id} [delete]
 func (s *CartController) DeleteProduct(c *gin.Context) {
 	id := c.Param("id")
 	idProduct, err := strconv.Atoi(id)

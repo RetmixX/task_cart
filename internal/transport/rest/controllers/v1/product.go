@@ -14,6 +14,14 @@ func NewProductController(productService service.ProductInterface) *ProductContr
 	return &ProductController{productService: productService}
 }
 
+// All Products godoc
+//
+//	@Summary	Просмотр всех товаров
+//	@Tags		products
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	dto.ProductWithCountDTO
+//	@Router		/api/v1/products [get]
 func (p *ProductController) GetAll(c *gin.Context) {
 	result, err := p.productService.All()
 
