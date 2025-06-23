@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"gorm.io/gorm"
 	"log/slog"
 	"os"
@@ -15,40 +14,17 @@ import (
 	v1 "task_cart/internal/transport/rest/controllers/v1"
 	"task_cart/internal/transport/server"
 	"task_cart/pkg/db"
+	"task_cart/pkg/log/sl"
 )
 
-type Test struct {
-	Name  string `form:"name" json:"name" binding:"required,min=3"`
-	Age   int    `form:"age" json:"age" binding:"required,min=0,max=110"`
-	Email string `form:"email" json:"email" binding:"required,email"`
-}
-
 func main() {
-	/*r := gin.Default()
-	r.POST("/test", func(c *gin.Context) {
-		var body Test
 
-		if err := c.ShouldBindJSON(&body); err != nil {
-			fmt.Println(err.(validator.ValidationErrors)[0].Field())
-			fmt.Println(err.(validator.ValidationErrors)[0].Tag())
-			fmt.Println()
-			c.JSON(400, gin.H{
-				"errors": parseError(err.(validator.ValidationErrors)),
-			})
-			return
-		}
-
-		c.JSON(200, gin.H{
-			"msg": "Ok",
-		})
-
-	})
-	r.Run()*/
 	cfg := config.MustLoad()
-	dbConn := db.MustStartDB(&cfg.DbConf, nil)
+	dbConn := db.MustStartDB(&cfg.DbConf)
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	defer db.MustCloseDB(dbConn, nil)
 	err := dbConn.SetupJoinTable(&entity.Cart{}, "Products", &entity.CartProduct{})
+
 	if err != nil {
 		panic(err)
 	}
@@ -56,10 +32,10 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("Success migrate")
+	logger.Info("Success migrate")
 
-	//seedData(dbConn)
-	//seedStatus(dbConn)
+	seedData(dbConn, logger)
+	seedStatus(dbConn, logger)
 	logger.Info("Start service...")
 	productRepo := repository.NewProductRepository(dbConn)
 	statusRepo := repository.NewStatusRepository(dbConn)
@@ -71,10 +47,10 @@ func main() {
 	cartService := service.NewCartService(cartRepo, productRepo, logger)
 	orderService := service.NewOrderService(orderRepo, statusRepo, cartRepo, logger)
 
-	statusCtrl := v1.NewStatusController(statusService)
-	productCtrl := v1.NewProductController(productService)
-	cartCtrl := v1.NewCartController(cartService)
-	orderCtrl := v1.NewOrderController(orderService)
+	statusCtrl := v1.NewStatusController(statusService, logger)
+	productCtrl := v1.NewProductController(productService, logger)
+	cartCtrl := v1.NewCartController(cartService, logger)
+	orderCtrl := v1.NewOrderController(orderService, logger)
 
 	restServer := server.NewRestServer(cfg.Port, cfg.Mode, statusCtrl, productCtrl, cartCtrl, orderCtrl)
 
@@ -91,7 +67,18 @@ func main() {
 
 }
 
-func seedData(con *gorm.DB) {
+func seedData(con *gorm.DB, log *slog.Logger) {
+	var products []entity.Product
+	log.Info("Start seed products data")
+	if err := con.Find(&products).Error; err != nil {
+		log.Error("fail seed, error: ", sl.Err(err))
+		return
+	}
+
+	if len(products) > 0 {
+		log.Info("Table is fill, skip....")
+		return
+	}
 	con.Create(&entity.Product{
 		Title: "Pizza",
 		Price: 100,
@@ -123,12 +110,25 @@ func seedData(con *gorm.DB) {
 	})
 
 	con.Create(&entity.Cart{})
+	log.Info("End seed data products")
 
 }
 
-func seedStatus(conn *gorm.DB) {
+func seedStatus(conn *gorm.DB, log *slog.Logger) {
+	var statuses []entity.Status
+	log.Info("Start seed statuses order")
+	if err := conn.Find(&statuses).Error; err != nil {
+		log.Error("fail get data from table status: ", sl.Err(err))
+		return
+	}
+
+	if len(statuses) > 0 {
+		log.Info("Table is fill, skip....")
+		return
+	}
 	conn.Create(&entity.Status{Name: "Issued"})
 	conn.Create(&entity.Status{Name: "Paid"})
 	conn.Create(&entity.Status{Name: "Sent"})
 	conn.Create(&entity.Status{Name: "Delivered"})
+	log.Info("End seed data status")
 }
