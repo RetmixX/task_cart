@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/cart": {
+        "/cart": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -68,7 +68,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/cart/product/{id}": {
+        "/cart/product/{id}": {
             "delete": {
                 "consumes": [
                     "application/json"
@@ -99,7 +99,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/orders": {
+        "/orders": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -179,7 +179,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/products": {
+        "/products": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -201,7 +201,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/statuses": {
+        "/statuses": {
             "get": {
                 "consumes": [
                     "application/json"

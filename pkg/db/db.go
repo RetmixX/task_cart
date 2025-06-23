@@ -10,11 +10,11 @@ import (
 
 var db *gorm.DB
 
-const dbUrl = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disable"
+const dbUrl = "host=%s user=%s password=%s dbname=%s sslmode=disable"
 
 func newDB(cfg *config.DbConf, log *log.Logger) *gorm.DB {
 	const op = "pkg.db.newDB"
-	connectionString := fmt.Sprintf(dbUrl, cfg.Host, cfg.User, cfg.Password, cfg.Name, cfg.Port)
+	connectionString := fmt.Sprintf(dbUrl, cfg.Host, cfg.User, cfg.Password, cfg.Name)
 
 	connection, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 

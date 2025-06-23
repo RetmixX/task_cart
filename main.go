@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gorm.io/gorm"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -43,9 +44,9 @@ func main() {
 
 	})
 	r.Run()*/
-
 	cfg := config.MustLoad()
 	dbConn := db.MustStartDB(&cfg.DbConf, nil)
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	defer db.MustCloseDB(dbConn, nil)
 	err := dbConn.SetupJoinTable(&entity.Cart{}, "Products", &entity.CartProduct{})
 	if err != nil {
@@ -59,16 +60,16 @@ func main() {
 
 	//seedData(dbConn)
 	//seedStatus(dbConn)
-
+	logger.Info("Start service...")
 	productRepo := repository.NewProductRepository(dbConn)
 	statusRepo := repository.NewStatusRepository(dbConn)
 	cartRepo := repository.NewCartRepository(dbConn)
 	orderRepo := repository.NewOrderRepository(dbConn)
 
-	productService := service.NewProductService(productRepo)
-	statusService := service.NewStatusService(statusRepo)
-	cartService := service.NewCartService(cartRepo, productRepo)
-	orderService := service.NewOrderService(orderRepo, statusRepo, cartRepo)
+	productService := service.NewProductService(productRepo, logger)
+	statusService := service.NewStatusService(statusRepo, logger)
+	cartService := service.NewCartService(cartRepo, productRepo, logger)
+	orderService := service.NewOrderService(orderRepo, statusRepo, cartRepo, logger)
 
 	statusCtrl := v1.NewStatusController(statusService)
 	productCtrl := v1.NewProductController(productService)

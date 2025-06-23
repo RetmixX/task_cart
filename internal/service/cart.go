@@ -82,21 +82,25 @@ func (c *CartService) DeleteProduct(idProduct uint) (*dto.CartDTO, error) {
 	log.Info("Start DeleteProduct()")
 	product, err := c.productRepo.ById(idProduct)
 	if err != nil {
-		log.Error("fail ")
 		if errors.Is(err, db.EntityNotFoundErr) {
+			log.Warn("product not found")
 			return nil, consts.NotFoundErr
 		}
-
+		log.Error("fail get product by id ", sl.Err(err))
 		return nil, consts.ServerErr
 	}
 
 	cart, err := c.cartRepo.DeleteProductFromCart(product)
 	if err != nil {
 		if errors.Is(err, db.EntityNotFoundErr) {
+			log.Warn("Product not found in cart")
 			return nil, consts.NotFoundErr
 		}
+		log.Error("fail remove product", sl.Err(err))
 		return nil, consts.ServerErr
 	}
+
+	log.Info("End DeleteProduct()")
 
 	return cart.ToDTO(), nil
 }
