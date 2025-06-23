@@ -111,7 +111,7 @@ func (o *OrderController) Update(c *gin.Context) {
 
 	if err != nil {
 		if errors.Is(err, consts.NotFoundErr) {
-			log.Warn("not found")
+			log.Warn("not found status, idOrder: ", orderId, "statusId: ", body.StatusId)
 			helper.NotFoundResponse(c)
 			return
 		}

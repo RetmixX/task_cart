@@ -120,7 +120,7 @@ func (s *CartController) DeleteProduct(c *gin.Context) {
 			helper.NotFoundResponse(c)
 			return
 		}
-		log.Error("fail delete product from cart: ", idProduct, sl.Err(err))
+		log.Error("fail delete product from cart, id: ", idProduct, "error: ", sl.Err(err))
 		helper.ServerErr(c)
 		return
 	}
