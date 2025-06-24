@@ -16,9 +16,11 @@ WORKDIR /root/
 
 COPY --from=builder /app/server .
 COPY --from=builder /app/.deploy/local/.env .deploy/local/.env
+COPY --from=builder /app/migrations/ migrations/
 
 
 RUN apk add --no-cache libc6-compat
 
+#RUN ./server migrations up
 
-CMD ["./server"]
+#CMD ["./server"]

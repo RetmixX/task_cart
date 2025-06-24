@@ -9,6 +9,15 @@
 - SERVER_PORT
 - SERVER_MODE
 
+# Пример заполнения
+- DB_NAME=cart_db
+- DB_USER=cart_user
+- DB_PASSWORD=password
+- DB_HOST=db
+- DB_PORT=5432
+- SERVER_PORT=0.0.0.0:3000
+- SERVER_MODE=debug
+
 # Перед запуском создайте .env
 
 # Запуск

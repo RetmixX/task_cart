@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 	"task_cart/config"
 )
 
@@ -46,7 +45,7 @@ func MustStartDB(cfg *config.DbConf) *gorm.DB {
 	return db
 }
 
-func MustCloseDB(db *gorm.DB, log *log.Logger) {
+func MustCloseDB(db *gorm.DB) {
 	sqlDB, err := db.DB()
 
 	if err != nil {

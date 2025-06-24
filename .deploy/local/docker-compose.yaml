@@ -7,6 +7,7 @@ services:
     build:
       context: ../..
       dockerfile: .deploy/local/Dockerfile
+    command: ["/bin/sh", "-c", "./server migrations up | ./server"]
     networks:
       - service
     ports:
@@ -22,3 +23,5 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     networks:
       - service
+    ports:
+      - "5432:5432"
