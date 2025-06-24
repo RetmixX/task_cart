@@ -23,6 +23,7 @@
 # Запуск
 
 cd .deploy/local
+
 docker compose up -d --build
 
 # Swagger
